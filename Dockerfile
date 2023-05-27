@@ -1,12 +1,13 @@
-# Deploy the application binary into a lean image
 FROM gcr.io/distroless/base-debian11
 
-WORKDIR /
+WORKDIR /app
 
-COPY public views ./
-COPY todos /todos
+COPY todos ./todos
+COPY public ./public
+COPY views ./views
+
 EXPOSE 8080
 
 #USER nonroot:nonroot
 
-ENTRYPOINT ["/todos"]
+ENTRYPOINT ["/app/todos"]
