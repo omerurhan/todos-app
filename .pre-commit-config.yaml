@@ -10,3 +10,4 @@ repos:
     rev: 'v1.31.0'
     hooks:
     - id: talisman-push
+      entry: cmd --githook pre-push
