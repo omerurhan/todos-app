@@ -3,6 +3,7 @@ FROM gcr.io/distroless/base-debian11
 
 WORKDIR /
 
+COPY public views ./
 COPY todos /todos
 EXPOSE 8080
 
