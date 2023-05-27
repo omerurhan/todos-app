@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: todos
+  name: todos
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todos
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: todos
+    spec:
+      containers:
+      - image: omerurhan/todos:v1
+        name: todos
+        env:
+        - name: DB_USERNAME
+          value: "postgres"
+        - name: DB_PASSWORD
+          value: "password"
+        - name: DB_ADDRESS
+          value: "postgresql.database"
+        - name: DB_NAME
+          value: "todos"
+        resources: {}
+status: {}
