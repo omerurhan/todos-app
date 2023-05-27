@@ -1,0 +1,6 @@
+projectKey=todos
+serverUrl=http://sonarqube.demo.io
+serverVersion=10.0.0.68432
+dashboardUrl=http://sonarqube.demo.io/dashboard?id=todos
+ceTaskId=AYhe2C51RbzkkR6ApSiu
+ceTaskUrl=http://sonarqube.demo.io/api/ce/task?id=AYhe2C51RbzkkR6ApSiu
