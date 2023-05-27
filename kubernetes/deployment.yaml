@@ -17,7 +17,7 @@ spec:
         app: todos
     spec:
       containers:
-      - image: omerurhan/todos:v1
+      - image: omerurhan/todos:v2
         name: todos
         env:
         - name: DB_USERNAME
