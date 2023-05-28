@@ -42,7 +42,6 @@ pipeline {
     stage('Sonarqube SAST') {
       agent {
         kubernetes {
-          label 'sonarscanner'
           defaultContainer 'sonarscanner'
           yaml '''
             apiVersion: v1
@@ -80,7 +79,6 @@ pipeline {
         stage ("Go dependency Check") {
           agent {
             kubernetes {
-              label 'dependency'
               defaultContainer 'golang'
               yaml '''
                 apiVersion: v1
@@ -104,7 +102,7 @@ pipeline {
         stage ("Trivy Scan") {
           agent {
             kubernetes {
-              label 'dependency'
+              defaultContainer 'trivy'
               yaml '''
                 apiVersion: v1
                 kind: Pod
@@ -126,7 +124,7 @@ pipeline {
         stage ("OPA Conftest") {
           agent {
             kubernetes {
-              label 'dependency'
+              defaultContainer 'conftest'
               yaml '''
                 apiVersion: v1
                 kind: Pod
@@ -180,6 +178,28 @@ pipeline {
       steps {
         unstash 'app'
         sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --force --insecure --skip-tls-verify --cache=true --destination=omerurhan/todos:v2'
+      }
+    }
+    stage ('Vulnerability Scan - Kubernetes') {
+      agent {
+        kubernetes {
+          yaml '''
+            apiVersion: v1
+            kind: Pod
+            spec:
+              containers:
+              - name: conftest
+                image: openpolicyagent/conftest
+                command:
+                - sleep
+                args:
+                - 99d
+            '''
+        }
+      }
+      steps {
+        sh 'conftest test --policy --policy opa-k8s-security.rego kubernetes/deployment.yaml'
+        sh 'conftest test --policy --policy opa-k8s-security.rego kubernetes/service.yaml'
       }
     }
     stage('Deploy Kubernetes') {
