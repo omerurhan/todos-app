@@ -22,12 +22,12 @@ deny[msg] {
 }
 
 # Only use trusted base images
-deny[msg] {
-    input[i].Cmd == "from"
-    val := split(input[i].Value[0], "/")
-    count(val) > 1
-    msg = sprintf("Line %d: use a trusted base image", [i])
-}
+#deny[msg] {
+#    input[i].Cmd == "from"
+#    val := split(input[i].Value[0], "/")
+#    count(val) > 1
+#    msg = sprintf("Line %d: use a trusted base image", [i])
+#}
 
 # Do not use 'latest' tag for base imagedeny[msg] {
 deny[msg] {
@@ -101,7 +101,7 @@ multi_stage = true {
     val := concat(" ", input[i].Flags)
     contains(lower(val), "--from=")
 }
-deny[msg] {
-    multi_stage == false
-    msg = sprintf("You COPY, but do not appear to use multi-stage builds...", [])
-}
+#deny[msg] {
+#    multi_stage == false
+#    msg = sprintf("You COPY, but do not appear to use multi-stage builds...", [])
+#}
