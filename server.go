@@ -83,18 +83,22 @@ func main() {
 		Views: engine,
 	})
 
+	// Get Records from todo list.
 	app.Get("/", func(c *fiber.Ctx) error {
 		return indexHandler(c, db)
 	})
 
+	// Add Records to todo list.
 	app.Post("/", func(c *fiber.Ctx) error {
 		return postHandler(c, db)
 	})
 
+	// Update Records to todo list.
 	app.Put("/update", func(c *fiber.Ctx) error {
 		return putHandler(c, db)
 	})
 
+	// Delete Records to todo list.
 	app.Delete("/delete", func(c *fiber.Ctx) error {
 		return deleteHandler(c, db)
 	})

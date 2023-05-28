@@ -275,7 +275,6 @@ pipeline {
         sh '''
         sleep 5s
 
-        # HTTP GET test
         http_get_code=$(curl -s -o /dev/null -w "%{http_code}" http://${applicationDNS}
         if [[ "$http_get_code" == 200 ]];
             then
