@@ -34,7 +34,6 @@ pipeline {
         }
       }
       steps {
-       // git branch: 'main', url: 'https://github.com/omerurhan/todos-app.git'
         sh 'go mod download'
         sh  'CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -o todos'
         stash includes: 'todos', name: 'app'
@@ -71,9 +70,9 @@ pipeline {
         }
       }
       steps {
-      //  git branch: 'main', url: 'https://github.com/omerurhan/todos-app.git'
         unstash 'app'
-        sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --force --insecure --skip-tls-verify --cache=true --destination=omerurhan/todos:v2'
+        sh 'printenv'
+        sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --force --insecure --skip-tls-verify --cache=true --destination=omerurhan/todos:${GIT_COMMIT}'
       }
     }
     stage('Deploy Kubernetes') {
@@ -96,7 +95,6 @@ pipeline {
         }
       }
       steps {
-      //  git branch: 'main', url: 'https://github.com/omerurhan/todos-app.git'
         withKubeConfig([credentialsId: 'kubeconfig']) {
           sh 'kubectl apply -f kubernetes/namespace.yaml'
           sh 'kubectl apply -f kubernetes'
