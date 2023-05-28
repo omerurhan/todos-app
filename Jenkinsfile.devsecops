@@ -295,5 +295,34 @@ pipeline {
         '''
       }
     }
+    stage ('OWASP ZAP - DAST') {
+      agent {
+        kubernetes {
+          defaultContainer 'zap'
+          yaml '''
+            apiVersion: v1
+            kind: Pod
+            spec:
+              containers:
+              - name: zap
+                image: owasp/zap2docker-weekly
+                command:
+                - sleep
+                args:
+                - 99d
+            '''
+        }
+      }
+      steps {
+        sh 'owasp/zap2docker-weekly zap-baseline.py -t http://todos.demo.io -r zap_report.html'
+        sh 'mkdir -p owasp-zap-report && mv zap_report.html owasp-zap-report'
+
+      }
+    }
+  }
+  post {
+    always {
+      publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'HTML Report', reportTitles: 'OWASP ZAP HTML REPORT', useWrapperFileDirectly: true])
+    }
   }
 }
