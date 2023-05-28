@@ -230,22 +230,22 @@ pipeline {
       }
       steps {
         parallel(
-          "Deployment" {
+          "Deployment": {
             withKubeConfig([credentialsId: 'kubeconfig']) {
             sh 'for f in kubernetes/*.yaml; do envsubst < $f | kubectl apply -f -; done'
             }
           }
-          "Rollout Status" {
+          "Rollout Status": {
             withKubeConfig([credentialsId: 'kubeconfig']) {
             sh '''
               sleep 60s
               if [[ $(kubectl -n ${namespace} rollout status deploy ${appName} --timeout 5s) != *"successfully rolled out"* ]];
               then
-	              echo "Deployment ${appName} Rollout has Failed"
+                  echo "Deployment ${appName} Rollout has Failed"
                 kubectl -n ${namespace} rollout undo deploy ${appName}
                 exit 1;
               else
-	              echo "Deployment ${appName} Rollout is Success"
+                  echo "Deployment ${appName} Rollout is Success"
               fi
             '''
             }
