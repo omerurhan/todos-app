@@ -12,7 +12,7 @@
  */
 
 pipeline {
-  agent none
+  agent any
   environment {
     namespace = "dev"
     appName = "todos"
