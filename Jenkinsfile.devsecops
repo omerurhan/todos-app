@@ -315,7 +315,7 @@ pipeline {
       }
       steps {
         sh 'mkdir -p owasp-zap-report'
-        sh 'zap2docker-weekly zap-baseline.py -t http://todos.demo.io -r owasp-zap-report/zap_report.html'
+        sh 'zap-baseline.py -t http://todos.demo.io -r owasp-zap-report/zap_report.html'
       }
     }
   }
