@@ -3,16 +3,16 @@ kind: Ingress
 metadata:
   labels:
     app.kubernetes.io/name: todos
-  name: todos-ingress
-  namespace: dev
+  name: ${appName}-ingress
+  namespace: ${namespace}
 spec:
   rules:
-  - host: todos.demo.io
+  - host: ${applicationDNS}
     http:
       paths:
       - backend:
           service:
-            name: todos-svc
+            name: ${appName}-svc
             port:
               number: 8080
         pathType: ImplementationSpecific
