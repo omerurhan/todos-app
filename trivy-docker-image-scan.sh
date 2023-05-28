@@ -3,7 +3,7 @@
 dockerImageName=$(awk 'NR==1 {print $2}' Dockerfile)
 echo $dockerImageName
 
-trivy -q image --exit-code 1 --severity HIGH,CRITICAL $dockerImageName
+/usr/local/bin/trivy -q image --exit-code 1 --severity HIGH,CRITICAL $dockerImageName
 
     # Trivy scan result processing
     exit_code=$?
