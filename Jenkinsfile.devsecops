@@ -134,13 +134,16 @@ pipeline {
                   containers:
                   - name: conftest
                     image: openpolicyagent/conftest
-                    args: ["test", "opa-docker-security.rego","Dockerfile"]
+                    command:
+                    - sleep
+                    args:
+                    - 99d
                 '''
             }
           }
-          //steps {
-          //  sh 'sh trivy-docker-image-scan.sh'
-          //}
+          steps {
+            sh 'conftest test --policy opa-docker-security.rego Dockerfile'
+          }
         }
       }
     }
