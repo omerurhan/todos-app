@@ -22,4 +22,4 @@ go.work
 
 .vscode
 tmp
-Jenkinsfile
+.scannerwork
