@@ -23,7 +23,6 @@ pipeline {
     stage('Build artifact') {
       agent {
         kubernetes {
-          label 'jenkinsrun'
           defaultContainer 'golang'
           yaml '''
             apiVersion: v1
@@ -186,7 +185,7 @@ pipeline {
       }
       steps {
         unstash 'app'
-        sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --force --insecure --skip-tls-verify --cache=true --destination=omerurhan/todods:${commitId}'
+        sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --force --insecure --skip-tls-verify --cache=true --destination=omerurhan/todos:${commitId}'
       }
     }
     stage ('Vulnerability Scan - Kubernetes') {
@@ -215,7 +214,6 @@ pipeline {
     stage('Deploy Kubernetes Dev') {
       agent {
         kubernetes {
-          label 'kubectl'
           defaultContainer 'kubectl'
           yaml '''
             apiVersion: v1
