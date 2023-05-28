@@ -1,5 +1,7 @@
 FROM gcr.io/distroless/base-debian11
 
+#gcr.io/distroless/base-nossl-debian11
+
 WORKDIR /app
 
 COPY todos ./todos
