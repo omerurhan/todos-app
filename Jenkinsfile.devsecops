@@ -240,14 +240,13 @@ pipeline {
             withKubeConfig([credentialsId: 'kubeconfig']) {
             sh '''
               sleep 60s
-              if [[ $(kubectl -n ${namespace} rollout status deploy ${appName} --timeout 5s) != *"successfully rolled out"* ]];
-              then
-                  echo "Deployment ${appName} Rollout has Failed"
-                kubectl -n ${namespace} rollout undo deploy ${appName}
-                exit 1;
-              else
-                  echo "Deployment ${appName} Rollout is Success"
+              kubectl -n ${namespace} rollout status deploy ${appName} --timeout 5s
+              retVal=$?
+              if [ $retVal -ne 0 ]; then
+                  echo "Deployment ${appName} Rollout has Failed. Rolling back deployment!"
+                  kubectl -n ${namespace} rollout undo deploy ${appName}
               fi
+              exit $retVal
             '''
             }
           }
