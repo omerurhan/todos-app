@@ -1,5 +1,3 @@
 fileignoreconfig:
 - filename: Jenkinsfile.devsecops
-  checksum: b0c3ace0ed38b8b53a478899bd0e677f655731792b26f7f598cad6d84151ef90
-- filename: Jenkinsfile.devops
-  checksum: e1937d4dabadb905ea6b08869b89634f7dee78a5e4ff0e8b0e53f2e3aff4c993
+  checksum: 99ad6cc61898778d59abb8e4537330b97907926fb2f186597a77021ef622eb0e
