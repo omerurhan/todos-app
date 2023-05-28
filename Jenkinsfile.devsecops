@@ -234,7 +234,7 @@ pipeline {
             withKubeConfig([credentialsId: 'kubeconfig']) {
             sh 'for f in kubernetes/*.yaml; do envsubst < $f | kubectl apply -f -; done'
             }
-          }
+          },
           "Rollout Status": {
             withKubeConfig([credentialsId: 'kubeconfig']) {
             sh '''
