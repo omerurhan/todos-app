@@ -29,4 +29,7 @@ spec:
         - name: DB_NAME
           value: "todos"
         resources: {}
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 100
 status: {}
