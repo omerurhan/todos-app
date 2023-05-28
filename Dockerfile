@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/base-debian11
+FROM gcr.io/distroless/base-nossl-debian11
 
 #gcr.io/distroless/base-nossl-debian11
 
@@ -10,6 +10,6 @@ COPY views ./views
 
 EXPOSE 8080
 
-#USER nonroot:nonroot
+USER nonroot:nonroot
 
 ENTRYPOINT ["/app/todos"]

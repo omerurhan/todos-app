@@ -123,6 +123,25 @@ pipeline {
             sh 'sh trivy-docker-image-scan.sh'
           }
         }
+        stage ("OPA Conftest") {
+          agent {
+            kubernetes {
+              label 'dependency'
+              yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  containers:
+                  - name: conftest
+                    image: openpolicyagent/conftest
+                    args: ["test", "opa-docker-security.rego","Dockerfile"]
+                '''
+            }
+          }
+          //steps {
+          //  sh 'sh trivy-docker-image-scan.sh'
+          //}
+        }
       }
     }
     stage('Build Docker Container and Push') {
