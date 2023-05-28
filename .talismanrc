@@ -1,3 +1,5 @@
 fileignoreconfig:
-- filename: go.sum
-  checksum: 79336539ea6c6d6113da4beae8fc50eb56554ff5590a6864273c4ace64ea4b82
+- filename: Jenkinsfile.devsecops
+  checksum: b0c3ace0ed38b8b53a478899bd0e677f655731792b26f7f598cad6d84151ef90
+- filename: Jenkinsfile.devops
+  checksum: e1937d4dabadb905ea6b08869b89634f7dee78a5e4ff0e8b0e53f2e3aff4c993
