@@ -17,7 +17,7 @@ spec:
         app: ${appName}
     spec:
       containers:
-      - image: ${imageName}
+      - image: omerurhan/todods:${commitId}
         name: ${appName}
         env:
         - name: DB_USERNAME

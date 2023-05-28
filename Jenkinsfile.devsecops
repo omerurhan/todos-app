@@ -16,7 +16,7 @@ pipeline {
   environment {
     namespace = "dev"
     appName = "todos"
-    imageName = "omerurhan/todos:${GIT_COMMIT}"
+    commitId = "${sh(script:'git rev-parse --short HEAD', returnStdout: true)}"
     applicationDNS = "todos.demo.io"
   }
   stages {
@@ -169,6 +169,9 @@ pipeline {
                 volumeMounts:
                   - name: jenkins-docker-cfg
                     mountPath: /kaniko/.docker
+                env:
+                  - name: IMAGE_NAME
+                    value: ${imageName}
               volumes:
               - name: jenkins-docker-cfg
                 projected:
@@ -183,7 +186,7 @@ pipeline {
       }
       steps {
         unstash 'app'
-        sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --force --insecure --skip-tls-verify --cache=true --destination=${imageName}'
+        sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --force --insecure --skip-tls-verify --cache=true --destination=omerurhan/todods:${commitId}'
       }
     }
     stage ('Vulnerability Scan - Kubernetes') {
@@ -205,8 +208,8 @@ pipeline {
         }
       }
       steps {
-        sh 'conftest test --policy --policy opa-k8s-security.rego kubernetes/deployment.yaml'
-        sh 'conftest test --policy --policy opa-k8s-security.rego kubernetes/service.yaml'
+        sh 'conftest test --policy opa-k8s-security.rego kubernetes/deployment.yaml'
+        sh 'conftest test --policy opa-k8s-security.rego kubernetes/service.yaml'
       }
     }
     stage('Deploy Kubernetes Dev') {
