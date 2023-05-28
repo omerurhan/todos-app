@@ -2,23 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: todos
-  name: todos
-  namespace: dev
+    app: ${appName}
+  name: ${appName}
+  namespace: ${namespace}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: todos
+      app: ${appName}
   strategy: {}
   template:
     metadata:
       labels:
-        app: todos
+        app: ${appName}
     spec:
       containers:
-      - image: omerurhan/todos:v2
-        name: todos
+      - image: ${imageName}
+        name: ${appName}
         env:
         - name: DB_USERNAME
           value: "postgres"

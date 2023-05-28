@@ -13,6 +13,12 @@
 
 pipeline {
   agent none
+  environment {
+    namespace = "dev"
+    appName = "todos"
+    imageName = "omerurhan/todos:${GIT_COMMIT}"
+    applicationDNS = "todos.demo.io"
+  }
   stages {
     stage('Build artifact') {
       agent {
@@ -177,12 +183,13 @@ pipeline {
       }
       steps {
         unstash 'app'
-        sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --force --insecure --skip-tls-verify --cache=true --destination=omerurhan/todos:v2'
+        sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --force --insecure --skip-tls-verify --cache=true --destination=${imageName}'
       }
     }
     stage ('Vulnerability Scan - Kubernetes') {
       agent {
         kubernetes {
+          defaultContainer 'conftest'
           yaml '''
             apiVersion: v1
             kind: Pod
@@ -202,7 +209,7 @@ pipeline {
         sh 'conftest test --policy --policy opa-k8s-security.rego kubernetes/service.yaml'
       }
     }
-    stage('Deploy Kubernetes') {
+    stage('Deploy Kubernetes Dev') {
       agent {
         kubernetes {
           label 'kubectl'
@@ -222,11 +229,28 @@ pipeline {
         }
       }
       steps {
-        withKubeConfig([credentialsId: 'kubeconfig']) {
-          sh 'kubectl apply -f kubernetes/namespace.yaml'
-          sh 'kubectl apply -f kubernetes'
-          sh 'kubectl rollout status deploy todos -n dev'
-        }
+        parallel(
+          "Deployment" {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+            sh 'for f in kubernetes/*.yaml; do envsubst < $f | kubectl apply -f -; done'
+            }
+          }
+          "Rollout Status" {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+            sh '''
+              sleep 60s
+              if [[ $(kubectl -n ${namespace} rollout status deploy ${appName} --timeout 5s) != *"successfully rolled out"* ]];
+              then
+	              echo "Deployment ${appName} Rollout has Failed"
+                kubectl -n ${namespace} rollout undo deploy ${appName}
+                exit 1;
+              else
+	              echo "Deployment ${appName} Rollout is Success"
+              fi
+            '''
+            }
+          }
+        )
       }
     }
   }
