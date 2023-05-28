@@ -263,7 +263,7 @@ pipeline {
             spec:
               containers:
               - name: curl
-                image: curlimages/curl:8.1.1
+                image: mrnonz/alpine-git-curl
                 command:
                 - sleep
                 args:
@@ -284,7 +284,6 @@ pipeline {
                 exit 1;
         fi
 
-        # HTTP POST test
         http_post_code=$(curl --data-raw 'Item=DEVSECOPS' -L -s -o /dev/null -w "%{http_code}" -H 'Content-Type: application/x-www-form-urlencoded' http://${applicationDNS})
         if [[ "$http_post_code" == 200 ]];
             then
