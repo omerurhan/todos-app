@@ -310,6 +310,13 @@ pipeline {
                 - sleep
                 args:
                 - 99d
+                volumeMounts:
+                - mountPath: /zap/wrk
+                  name: zap-report
+              volumes:
+              - name: zap-report
+                emptyDir:
+                  sizeLimit: 500Mi
             '''
         }
       }
