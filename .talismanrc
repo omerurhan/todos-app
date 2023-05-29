@@ -1,3 +1,3 @@
 fileignoreconfig:
 - filename: Jenkinsfile.devsecops
-  checksum: 4862a1d640ca9472477ab3002622063074ffa24022021342e26fb246e3c26d8c
+  checksum: 8028d8d43d5d3e8628d788fe741859a993da246e94f5d486f8e5fd3dd9c51165
