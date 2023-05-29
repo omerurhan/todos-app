@@ -90,7 +90,7 @@ pipeline {
       steps {
         withKubeConfig([credentialsId: 'kubeconfig']) {
           sh 'for f in kubernetes/*.yaml; do envsubst < $f | kubectl apply -f -; done'
-          sh 'kubectl rollout status deploy ${appName} -n ${namepsace}'
+          sh 'kubectl rollout status deploy ${appName} -n ${namespace}'
         }
       }
      }
