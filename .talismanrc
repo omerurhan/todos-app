@@ -1,12 +1,3 @@
 fileignoreconfig:
-- filename: go.sum
-  checksum: 79336539ea6c6d6113da4beae8fc50eb56554ff5590a6864273c4ace64ea4b82
-- filename: docker-compose.yml
-  checksum: f989476346c452a3919d9fb23a6ff9fe76bc409d07b0efd54572dfe0404f4c8a
 - filename: Jenkinsfile
-  checksum: b9522cfbce69e9eadf22d6f4429228a103eb89881f82049f41f7dfb74e9ef5a9
-- filename: server.go
-  checksum: 8e79ae83fcc189c9d7914ff0e171390e05e0eba0dde1c480bde822eeedf355a7
-- filename: Jenkinsfile.devops
-  checksum: f17172e2159c42bf2beafc935fa0cd37b1401901099c40ec05b2cddad504d88e
-version: ""
+  checksum: 39ee3ae19f5127cf4123d2f4f7e55afbf7a6ece22ad4ee4ee2603e4ab68e3e61
