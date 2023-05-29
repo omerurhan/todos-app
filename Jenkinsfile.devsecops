@@ -323,9 +323,8 @@ pipeline {
       steps {
         sh '''
         mkdir -p owasp-zap-report
-        zap-baseline.py -t http://todos.demo.io -r zap_report.html
+        zap-baseline.py -t http://todos.demo.io -r zap_report.html || exit_code=$?
         mv zap_report.html owasp-zap-report
-        exit_code=$?
         if [[ ${exit_code} -ne 0 ]];  then
           echo "OWASP ZAP Report has either Low/Medium/High Risk. Please check the HTML Report"
           exit 1;
