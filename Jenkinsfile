@@ -37,6 +37,29 @@ pipeline {
         }
       }
     }
+        stage ("Go dependency Check") {
+          agent {
+            kubernetes {
+              defaultContainer 'golang'
+              yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  containers:
+                  - name: golang
+                    image: golang:1.20
+                    command:
+                    - sleep
+                    args:
+                    - 99d
+                '''
+            }
+          }
+          steps {
+              sh 'go install golang.org/x/vuln/cmd/govulncheck@latest'
+              sh 'govulncheck ./...'
+          }
+        }
         stage('Build artifact') {
           agent {
             kubernetes {
