@@ -7,6 +7,32 @@ pipeline {
         applicationDNS = "todos.demo.io"
     }
     stages {
+      stage('Sonarqube SAST') {
+      agent {
+        kubernetes {
+          defaultContainer 'sonarscanner'
+          yaml '''
+            apiVersion: v1
+            kind: Pod
+            spec:
+              containers:
+              - name: sonarscanner
+                image: sonarsource/sonar-scanner-cli
+                command:
+                - sleep
+                args:
+                - 99d
+            '''
+        }
+      }
+      steps {
+        sh 'sonar-scanner \
+            -Dsonar.projectKey=todos \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=http://sonarqube.demo.io \
+            -Dsonar.token=sqp_1ac9ad7b2943abdc7992af865cc9e373688d6d7a'
+      }
+    }
         stage('Build artifact') {
           agent {
             kubernetes {
@@ -94,6 +120,6 @@ pipeline {
         }
       }
      }
-        
+
     }
 }
