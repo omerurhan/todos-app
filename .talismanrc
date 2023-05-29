@@ -1,3 +1,4 @@
+threshold: medium
 fileignoreconfig:
 - filename: Jenkinsfile
   checksum: b4d009a26b7e04fab738d1c8052ae3001c67968f99e2613146e20cbfb2dca300
