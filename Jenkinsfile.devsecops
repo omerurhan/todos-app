@@ -233,6 +233,7 @@ pipeline {
         parallel(
           "Deployment": {
             withKubeConfig([credentialsId: 'kubeconfig']) {
+            sh 'kubectl apply -f kubernetes/sa.yaml'
             sh 'for f in kubernetes/*.yaml; do envsubst < $f | kubectl apply -f -; done'
             }
           },
@@ -326,7 +327,7 @@ pipeline {
         zap-baseline.py -t http://todos.demo.io -r zap_report.html || exit_code=$?
         pwd
         ls -l
-        mv wrk/zap_report.html owasp-zap-report
+        mv /zap/wrk/zap_report.html owasp-zap-report
         if [[ ${exit_code} -ne 0 ]];  then
           echo "OWASP ZAP Report has either Low/Medium/High Risk. Please check the HTML Report"
           exit 1;

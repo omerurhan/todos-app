@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/base-nossl-debian11
+FROM alpine:3.18.0
 
 #gcr.io/distroless/base-nossl-debian11
 
