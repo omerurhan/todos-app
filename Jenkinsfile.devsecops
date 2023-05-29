@@ -328,19 +328,20 @@ pipeline {
         pwd
         ls -l
         mv /zap/wrk/zap_report.html owasp-zap-report
-        if [[ ${exit_code} -ne 0 ]];  then
-          echo "OWASP ZAP Report has either Low/Medium/High Risk. Please check the HTML Report"
-          exit 1;
-        else
-          echo "OWASP ZAP did not report any Risk"
-        fi;
+        if [[ ${exit_code} -ne 0 ]];
+          then
+            echo "OWASP ZAP Report has either Low/Medium/High Risk. Please check the HTML Report"
+            exit 1;
+          else
+            echo "OWASP ZAP did not report any Risk"
+        fi
         '''
       }
     }
   }
   post {
     always {
-      publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: false, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'HTML Report', reportTitles: 'OWASP ZAP HTML REPORT', useWrapperFileDirectly: true])
+      publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML REPORT', reportTitles: 'OWASP ZAP HTML REPORT'])
     }
   }
 }
