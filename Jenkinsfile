@@ -67,6 +67,33 @@ pipeline {
         sh 'printenv'
         sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --force --insecure --skip-tls-verify --cache=true --destination=omerurhan/todos:${commitId}'
       }
-    }        
+    }
+    stage('Deploy Kubernetes') {
+      agent {
+        kubernetes {
+          label 'kubectl'
+          defaultContainer 'kubectl'
+          yaml '''
+            apiVersion: v1
+            kind: Pod
+            spec:
+              containers:
+              - name: kubectl
+                image: alpine/k8s:1.25.0
+                command:
+                - sleep
+                args:
+                - 99d
+            '''
+        }
+      }
+      steps {
+        withKubeConfig([credentialsId: 'kubeconfig']) {
+          sh 'for f in kubernetes/*.yaml; do envsubst < $f | kubectl apply -f -; done'
+          sh 'kubectl rollout status deploy ${appName} -n ${namepsace}'
+        }
+      }
+     }
+        
     }
 }
