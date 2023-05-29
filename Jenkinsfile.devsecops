@@ -315,7 +315,7 @@ pipeline {
       }
       steps {
         sh '''
-        mkdir -p owasp-zap-report'
+        mkdir -p owasp-zap-report
         sh 'zap-baseline.py -t http://todos.demo.io -r zap_report.html
         mv zap_report.html owasp-zap-report
         exit_code=$?
