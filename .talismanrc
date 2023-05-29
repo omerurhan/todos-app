@@ -1,3 +1,4 @@
+threshold: medium
 fileignoreconfig:
 - filename: Jenkinsfile.devsecops
   checksum: 99ad6cc61898778d59abb8e4537330b97907926fb2f186597a77021ef622eb0e
