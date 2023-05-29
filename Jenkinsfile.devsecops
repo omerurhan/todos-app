@@ -314,14 +314,24 @@ pipeline {
         }
       }
       steps {
-        sh 'mkdir -p owasp-zap-report'
-        sh 'zap-baseline.py -t http://todos.demo.io -r owasp-zap-report/zap_report.html'
+        sh '''
+        mkdir -p owasp-zap-report'
+        sh 'zap-baseline.py -t http://todos.demo.io -r zap_report.html
+        mv zap_report.html owasp-zap-report
+        exit_code=$?
+        if [[ ${exit_code} -ne 0 ]];  then
+          echo "OWASP ZAP Report has either Low/Medium/High Risk. Please check the HTML Report"
+          exit 1;
+        else
+          echo "OWASP ZAP did not report any Risk"
+        fi;
+        '''
       }
     }
   }
   post {
     always {
-      publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'HTML Report', reportTitles: 'OWASP ZAP HTML REPORT', useWrapperFileDirectly: true])
+      publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: false, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'HTML Report', reportTitles: 'OWASP ZAP HTML REPORT', useWrapperFileDirectly: true])
     }
   }
 }
