@@ -68,7 +68,7 @@ pipeline {
 //          -Dsonar.sources=. \
 //          -Dsonar.host.url=http://sonarqube.demo.io \
 //          -Dsonar.token=sqp_76c022313f89a1517333b4004cbb0319f2d0d0c3'
-        withSonarQubeEnv('SonarQube') {
+        withSonarQubeEnv('sonarqube') {
           sh 'sonar-scanner \
            -Dsonar.projectKey=todos \
            -Dsonar.sources=. \
