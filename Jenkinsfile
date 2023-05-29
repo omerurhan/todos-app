@@ -26,11 +26,15 @@ pipeline {
         }
       }
       steps {
-        sh 'sonar-scanner \
-            -Dsonar.projectKey=todos \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=http://sonarqube.demo.io \
-            -Dsonar.token=sqp_1ac9ad7b2943abdc7992af865cc9e373688d6d7a'
+        withSonarQubeEnv('sonarqube') {
+          sh 'sonar-scanner \
+           -Dsonar.projectKey=todos \
+           -Dsonar.sources=. \
+           -Dsonar.host.url=http://sonarqube.demo.io'
+        }
+        timeout(time: 3, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
       }
     }
         stage('Build artifact') {
