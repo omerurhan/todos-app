@@ -32,6 +32,8 @@ spec:
       containers:
       - image: omerurhan/todos:${commitId}
         name: ${appName}
+        command: ['sh', '-c']
+        args: ['source /vault/secrets/config && /app/todos']
         securityContext:
           runAsUser: 100
           runAsNonRoot: true
