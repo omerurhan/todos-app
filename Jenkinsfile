@@ -221,7 +221,6 @@ pipeline {
     stage('Deploy Kubernetes') {
       agent {
         kubernetes {
-          label 'kubectl'
           defaultContainer 'kubectl'
           yaml '''
             apiVersion: v1
@@ -262,5 +261,47 @@ pipeline {
         )
       }
      }
+    stage ('Integration Test') {
+      agent {
+        kubernetes {
+          defaultContainer 'curl'
+          yaml '''
+            apiVersion: v1
+            kind: Pod
+            spec:
+              containers:
+              - name: curl
+                image: mrnonz/alpine-git-curl
+                command:
+                - sleep
+                args:
+                - 99d
+            '''
+        }
+      }
+      steps {
+        sh '''
+        sleep 5s
+
+        http_get_code=$(curl -s -o /dev/null -w "%{http_code}" http://${applicationDNS})
+        if [[ "$http_get_code" == 200 ]];
+            then
+                echo "indexHandler Test Passed"
+            else
+                echo "indexHandler Test Failed"
+                exit 1;
+        fi
+
+        http_post_code=$(curl --data-raw 'Item=DEVSECOPS' -L -s -o /dev/null -w "%{http_code}" -H 'Content-Type: application/x-www-form-urlencoded' http://${applicationDNS})
+        if [[ "$http_post_code" == 200 ]];
+            then
+                echo "postHandler Test Passed"
+            else
+                echo "postHandler Test Failed"
+                exit 1;
+        fi
+        '''
+      }
+    }
   }
 }
