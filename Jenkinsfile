@@ -169,6 +169,55 @@ pipeline {
         sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --force --insecure --skip-tls-verify --cache=true --destination=omerurhan/todos:${commitId}'
       }
     }
+    stage ('Vulnerability Scan - Kubernetes') {
+      parallel {
+        stage ('Opa conftest kubernetes'){
+        agent {
+        kubernetes {
+          defaultContainer 'conftest'
+          yaml '''
+            apiVersion: v1
+            kind: Pod
+            spec:
+              containers:
+              - name: conftest
+                image: openpolicyagent/conftest
+                command:
+                - sleep
+                args:
+                - 99d
+            '''
+        }
+      }
+      steps {
+        sh 'conftest test --policy opa-k8s-security.rego kubernetes/deployment.yaml'
+        sh 'conftest test --policy opa-k8s-security.rego kubernetes/service.yaml'
+      }
+        }
+        stage ("Trivy Scan for ready container") {
+          agent {
+            kubernetes {
+              defaultContainer 'trivy'
+              yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  containers:
+                  - name: trivy
+                    image: aquasec/trivy:0.41.0
+                    command:
+                    - sleep
+                    args:
+                    - 99d
+                '''
+            }
+          }
+          steps {
+            sh 'trivy image --exit-code 1 --severity CRITICAL,HIGH  omerurhan/todos:${commitId}'
+          }
+        }
+      }
+    }
     stage('Deploy Kubernetes') {
       agent {
         kubernetes {
@@ -195,6 +244,5 @@ pipeline {
         }
       }
      }
-
-    }
+  }
 }
