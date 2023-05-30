@@ -19,6 +19,9 @@ spec:
       containers:
       - image: omerurhan/todos:${commitId}
         name: ${appName}
+        securityContext:
+          runAsUser: 100
+          runAsNonRoot: true
         env:
         - name: DB_USERNAME
           value: "postgres"
