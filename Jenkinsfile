@@ -107,7 +107,6 @@ pipeline {
           }
         }
       }
-      }
     }
         stage('Build artifact') {
           agent {
