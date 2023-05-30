@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/base-debian11
+FROM alpine:3.18
 
 WORKDIR /app
 
