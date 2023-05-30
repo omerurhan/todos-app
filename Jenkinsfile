@@ -37,31 +37,32 @@ pipeline {
         }
       }
     }
-    parallel {
-      stage ("Go dependency Check") {
-        agent {
-          kubernetes {
-            defaultContainer 'golang'
-            yaml '''
-              apiVersion: v1
-              kind: Pod
-              spec:
-                containers:
-                - name: golang
-                  image: golang:1.20
-                  command:
-                  - sleep
-                  args:
-                  - 99d
-              '''
+    stage('Vulnerability Scan - Docker') {
+      parallel {
+        stage ("Go dependency Check") {
+          agent {
+            kubernetes {
+              defaultContainer 'golang'
+              yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  containers:
+                  - name: golang
+                    image: golang:1.20
+                    command:
+                    - sleep
+                    args:
+                    - 99d
+                '''
+            }
+          }
+          steps {
+              sh 'go install golang.org/x/vuln/cmd/govulncheck@latest'
+              sh 'govulncheck ./...'
           }
         }
-        steps {
-            sh 'go install golang.org/x/vuln/cmd/govulncheck@latest'
-            sh 'govulncheck ./...'
-        }
-      }
-      stage ("Trivy Scan") {
+        stage ("Trivy Scan") {
           agent {
             kubernetes {
               defaultContainer 'trivy'
@@ -82,6 +83,7 @@ pipeline {
           steps {
             sh 'sh trivy-docker-image-scan.sh'
           }
+        }
       }
     }
         stage('Build artifact') {
