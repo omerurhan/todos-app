@@ -238,10 +238,28 @@ pipeline {
         }
       }
       steps {
-        withKubeConfig([credentialsId: 'kubeconfig']) {
-          sh 'for f in kubernetes/*.yaml; do envsubst < $f | kubectl apply -f -; done'
-          sh 'kubectl rollout status deploy ${appName} -n ${namespace}'
-        }
+        parallel(
+          "Deployment": {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+            sh 'kubectl apply -f kubernetes/sa.yaml'
+            sh 'for f in kubernetes/*.yaml; do envsubst < $f | kubectl apply -f -; done'
+            }
+          },
+          "Rollout Status": {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+            sh '''
+              sleep 30s
+              kubectl -n ${namespace} rollout status deploy ${appName} --timeout 5s
+              retVal=$?
+              if [ $retVal -ne 0 ]; then
+                  echo "Deployment ${appName} Rollout has Failed. Rolling back deployment!"
+                  kubectl -n ${namespace} rollout undo deploy ${appName}
+              fi
+              exit $retVal
+            '''
+            }
+          }
+        )
       }
      }
   }
