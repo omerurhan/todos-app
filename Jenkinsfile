@@ -84,6 +84,29 @@ pipeline {
             sh 'sh trivy-docker-image-scan.sh'
           }
         }
+        stage ("OPA Conftest") {
+          agent {
+            kubernetes {
+              defaultContainer 'conftest'
+              yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  containers:
+                  - name: conftest
+                    image: openpolicyagent/conftest
+                    command:
+                    - sleep
+                    args:
+                    - 99d
+                '''
+            }
+          }
+          steps {
+            sh 'conftest test --policy opa-docker-security.rego Dockerfile'
+          }
+        }
+      }
       }
     }
         stage('Build artifact') {
