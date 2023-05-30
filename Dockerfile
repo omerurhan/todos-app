@@ -8,6 +8,9 @@ COPY views ./views
 
 EXPOSE 8080
 
-#USER nonroot:nonroot
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+
+USER nonroot
 
 ENTRYPOINT ["/app/todos"]
