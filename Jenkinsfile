@@ -240,7 +240,7 @@ pipeline {
         parallel(
           "Deployment": {
             withKubeConfig([credentialsId: 'kubeconfig']) {
-            //sh 'kubectl apply -f kubernetes/sa.yaml'
+            sh 'kubectl apply -f kubernetes/sa.yaml'
             sh 'for f in kubernetes/*.yaml; do envsubst < $f | kubectl apply -f -; done'
             }
           },

@@ -15,7 +15,20 @@ spec:
     metadata:
       labels:
         app: ${appName}
+      annotations:
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/role: 'todos'
+        vault.hashicorp.com/agent-inject-secret-config: 'crds/data/psql'
+        # Environment variable export template
+        vault.hashicorp.com/agent-inject-template-config: |
+          {{- with secret "crds/data/psql" -}}
+            export DB_USERNAME="{{ .Data.data.username }}"
+          {{- end }}
+          {{- with secret "crds/data/psql" -}}
+            export DB_PASSWORD="{{ .Data.data.password }}"
+          {{- end }}
     spec:
+      serviceAccountName: todos
       containers:
       - image: omerurhan/todos:${commitId}
         name: ${appName}
@@ -23,10 +36,6 @@ spec:
           runAsUser: 100
           runAsNonRoot: true
         env:
-        - name: DB_USERNAME
-          value: "postgres"
-        - name: DB_PASSWORD
-          value: "password"
         - name: DB_ADDRESS
           value: "postgresql.database"
         - name: DB_NAME
